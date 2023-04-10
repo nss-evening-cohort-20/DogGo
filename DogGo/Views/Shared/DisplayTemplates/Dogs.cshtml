@@ -1,0 +1,18 @@
+﻿@model List<Dog>
+<div>
+    @if (Model.Count == 0)
+    {
+        <div>
+            No dogs found! 
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <div>
+                @Html.DisplayFor(modelItem => item.Name) - @Html.DisplayFor(modelItem => item.Breed)
+            </div>
+        }
+    }
+</div>
