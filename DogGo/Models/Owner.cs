@@ -13,7 +13,7 @@ public class Owner
     public string Name { get; set; }
 
     [StringLength(255)]
-    public string Address { get; set; }
+    public string? Address { get; set; }
 
     public int? NeighborhoodId { get; set; }
 
