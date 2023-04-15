@@ -9,35 +9,30 @@
 <div>
     <h4>Walker</h4>
     <hr />
+    <h5>Total Walk Time: @Model.TotalWalkTime</h5>
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Id)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Id)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dogs)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Dogs, "Dogs")
-        </dd>
-        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Neighborhood)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Neighborhood.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ImageUrl)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ImageUrl, "LargeThumbnail")
         </dd>
         <dt class="col-sm-2">
@@ -49,13 +44,19 @@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Walks)
         </dt>
-        <a asp-action="Create" asp-controller="Walks">Add Walk</a>
+        <a asp-action="Create" asp-controller="Walks" asp-route-id="@Model.Id">Add Walk</a>
         <dd class="col-sm-10">
             @foreach (var walk in Model.Walks)
             {
-                <div>@walk.Date</div>
-                <div>@walk.Duration</div>
-                <div>@walk.DogId</div>
+                <div>
+                    @walk.Date.ToShortDateString()
+                </div>
+                <div>
+                    @Html.DisplayFor(model => walk.Duration, "DurationToText")
+                </div>
+                <div>
+                    @Model.Dogs.Find(d => d.Id == walk.DogId)?.Name
+                </div>
                 <hr />
             }
         </dd>

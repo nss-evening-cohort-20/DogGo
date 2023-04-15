@@ -1,4 +1,5 @@
 ﻿using DogGo.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 
 namespace DogGo.Repositories;
@@ -177,4 +178,89 @@ public class DogRepository : BaseRepository, IDogRepository
         }
     }
 
+    public List<Dog> GetDogsByNeighborhood(int neighborhoodId)
+    {
+        using (SqlConnection conn = Connection)
+        {
+            conn.Open();
+            using (SqlCommand cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"
+                        Select d.Id
+                              ,d.[Name]
+                              ,OwnerId
+                              ,Breed
+                              ,Notes
+                              ,ImageUrl
+                        FROM Dog d
+                        JOIN Owner o on o.Id = d.OwnerId
+                        WHERE o.NeighborhoodId = @id";
+                cmd.Parameters.AddWithValue("@id", neighborhoodId);
+
+                using SqlDataReader reader = cmd.ExecuteReader();
+
+                List<Dog> dogs = new List<Dog>();
+                while (reader.Read())
+                {
+                    Dog dog = new Dog
+                    {
+                        Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                        Name = reader.GetString(reader.GetOrdinal("Name")),
+                        OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
+                        Breed = reader.GetString(reader.GetOrdinal("Breed")),
+                        Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes")),
+                        ImageUrl = reader.IsDBNull(reader.GetOrdinal("ImageUrl")) ? null : reader.GetString(reader.GetOrdinal("ImageUrl")),
+                    };
+
+                    dogs.Add(dog);
+                }
+
+                return dogs;
+            }
+        }
+    }
+
+    public List<Dog> GetDogsByOwner(int ownerId)
+    {
+        using (SqlConnection conn = Connection)
+        {
+            conn.Open();
+            using (SqlCommand cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = @"
+                        Select Id
+                        ,[Name]
+                        ,OwnerId
+                        ,Breed
+                        ,Notes
+                        ,ImageUrl
+                        From Dog
+                        WHERE OwnerId = @ownerId
+                    ";
+                cmd.Parameters.AddWithValue("@ownerId", ownerId);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                List<Dog> dogs = new List<Dog>();
+                while (reader.Read())
+                {
+                    Dog dog = new Dog
+                    {
+                        Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                        Name = reader.GetString(reader.GetOrdinal("Name")),
+                        OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
+                        Breed = reader.GetString(reader.GetOrdinal("Breed")),
+                        Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes")),
+                        ImageUrl = reader.IsDBNull(reader.GetOrdinal("ImageUrl")) ? null : reader.GetString(reader.GetOrdinal("ImageUrl")),
+                    };
+
+                    dogs.Add(dog);
+                }
+
+                reader.Close();
+
+                return dogs;
+            }
+        }
+    }
 }

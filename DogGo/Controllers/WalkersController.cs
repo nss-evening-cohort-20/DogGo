@@ -1,5 +1,7 @@
 ﻿using DogGo.Models;
+using DogGo.Models.ViewModels;
 using DogGo.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -16,6 +18,7 @@ namespace DogGo.Controllers
             _walkRepo = walkRepo;
         }
 
+        
         public IActionResult Index()
         {
             List<Walker> walkers = _walkerRepo.GetAllWalkers();
@@ -35,6 +38,10 @@ namespace DogGo.Controllers
             List<Walk> walks = _walkRepo.GetByWalkerId(id);
             walker.Walks = walks;
 
+            var vm = new WalkerDetailViewModel()
+            {
+                Walker = walker
+            };
             return View(walker);
         }
     }

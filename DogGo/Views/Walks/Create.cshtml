@@ -1,8 +1,9 @@
-﻿@model DogGo.Models.Walk
+﻿@model DogGo.Models.ViewModels.WalkFormViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
+
 
 <h1>Create</h1>
 
@@ -10,7 +11,11 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" asp-controller="Walks">
+            <div>
+                @Html.HiddenFor(model => model.DogOptions)
+                @Html.HiddenFor(model => model.WalkerId)
+            </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
@@ -18,19 +23,21 @@
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Duration" class="control-label"></label>
-                <input asp-for="Duration" class="form-control" />
+                <label asp-for="Hours" class="control-label"></label>
+                <input asp-for="Hours" class="form-control" placeholder="Hours" />
+                <label asp-for="Minutes" class="control-label"></label>
+                <input asp-for="Minutes" class="form-control" placeholder="Minutes" />
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="WalkerId" class="control-label"></label>
-                <input asp-for="WalkerId" class="form-control" />
-                <span asp-validation-for="WalkerId" class="text-danger"></span>
+                <input type="hidden" asp-for="WalkerId" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="DogId" class="control-label"></label>
-                <input asp-for="DogId" class="form-control" />
-                <span asp-validation-for="DogId" class="text-danger"></span>
+                <label asp-for="SelectedDogs" class="control-label"></label>
+                <select asp-for="SelectedDogs" asp-items="@Model.DogOptions" class="form-control">
+                    <option value="">Which dogs did you walk?</option>
+                </select>
+                <span asp-validation-for="SelectedDogs" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -40,9 +47,11 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Details" asp-controller="Walkers" asp-route-id="@Model.WalkerId">Back</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

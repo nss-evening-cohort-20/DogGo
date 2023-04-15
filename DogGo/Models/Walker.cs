@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using DogGo.Utilities;
+using System.ComponentModel;
 
 namespace DogGo.Models;
 
@@ -18,4 +19,5 @@ public class Walker
 
     public List<Dog> Dogs { get; set; } = new List<Dog>();
     public List<Walk> Walks { get; set; } = new List<Walk>();
+    public string TotalWalkTime => ViewHelpers.DurationToText(Walks.Sum(w => w.Duration));
 }
