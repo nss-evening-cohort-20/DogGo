@@ -54,8 +54,11 @@ public class OwnerRepository : BaseRepository, IOwnerRepository
                                   ,[Address]
                                   ,[NeighborhoodId]
                                   ,[Phone]
+                                  ,d.Id as DogId
                             	  ,d.[Name] as DogName
                             	  ,d.Breed
+                                  ,d.Notes
+                                  ,d.ImageUrl
                             FROM [DogWalkerMVC].[dbo].[Owner] o
                             LEFT JOIN Dog d ON d.OwnerId = o.Id
                             WHERE o.Id = @id";
@@ -82,9 +85,21 @@ public class OwnerRepository : BaseRepository, IOwnerRepository
             {
                 Dog dog = new Dog()
                 {
+                    Id = rdr.GetInt32(rdr.GetOrdinal("DogId")),
                     Name = rdr.GetString(rdr.GetOrdinal("DogName")),
                     Breed = rdr.GetString(rdr.GetOrdinal("Breed")),
+                    OwnerId = rdr.GetInt32(rdr.GetOrdinal("Id"))
                 };
+
+                if (rdr.IsDBNull(rdr.GetOrdinal("Notes")) == false)
+                {
+                    dog.Notes = rdr.GetString(rdr.GetOrdinal("Notes"));
+                }
+                if (rdr.IsDBNull(rdr.GetOrdinal("ImageUrl")) == false)
+                {
+                    dog.ImageUrl = rdr.GetString(rdr.GetOrdinal("ImageUrl"));
+                }
+
                 owner.Dogs.Add(dog);
             }
         }

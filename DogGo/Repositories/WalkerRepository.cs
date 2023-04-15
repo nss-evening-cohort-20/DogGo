@@ -60,6 +60,7 @@ public class WalkerRepository : BaseRepository, IWalkerRepository
                             	  ,d.Notes
                             	  ,d.ImageUrl as DogImageUrl
                                   ,n.[Name] as NeighborhoodName
+                                  ,w.RegistrationId
                             FROM Walker w
                             LEFT JOIN Neighborhood n on n.Id = w.NeighborhoodId
                             LEFT JOIN [Owner] o on o.NeighborhoodId = n.Id
@@ -81,6 +82,7 @@ public class WalkerRepository : BaseRepository, IWalkerRepository
                     Name = reader.GetString(reader.GetOrdinal("WalkerName")),
                     ImageUrl = reader.GetString(reader.GetOrdinal("WalkerImageUrl")),
                     NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
+                    RegistrationId = reader.GetString(reader.GetOrdinal("RegistrationId")),
                     Neighborhood = new Neighborhood()
                     {
                         Id = reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
@@ -106,5 +108,37 @@ public class WalkerRepository : BaseRepository, IWalkerRepository
             }
         }
         return walker;
+    }
+
+    public List<Walker> GetWalkersInNeighborhood(int neighborhoodId)
+    {
+        using SqlConnection conn = Connection;
+        conn.Open();
+        using SqlCommand cmd = conn.CreateCommand();
+        cmd.CommandText = @"
+                SELECT Id, [Name], ImageUrl, NeighborhoodId
+                FROM Walker
+                WHERE NeighborhoodId = @neighborhoodId
+            ";
+
+        cmd.Parameters.AddWithValue("@neighborhoodId", neighborhoodId);
+
+        using SqlDataReader reader = cmd.ExecuteReader();
+
+        List<Walker> walkers = new List<Walker>();
+        while (reader.Read())
+        {
+            Walker walker = new Walker
+            {
+                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                Name = reader.GetString(reader.GetOrdinal("Name")),
+                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
+                NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId"))
+            };
+
+            walkers.Add(walker);
+        }
+
+        return walkers;
     }
 }

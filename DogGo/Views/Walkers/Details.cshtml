@@ -40,8 +40,27 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ImageUrl, "LargeThumbnail")
         </dd>
-        
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RegistrationId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RegistrationId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Walks)
+        </dt>
+        <a asp-action="Create" asp-controller="Walks">Add Walk</a>
+        <dd class="col-sm-10">
+            @foreach (var walk in Model.Walks)
+            {
+                <div>@walk.Date</div>
+                <div>@walk.Duration</div>
+                <div>@walk.DogId</div>
+                <hr />
+            }
+        </dd>
     </dl>
+
 </div>
 <div>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id  }) |

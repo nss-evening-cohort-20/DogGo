@@ -8,10 +8,12 @@ namespace DogGo.Controllers
     public class WalkersController : Controller
     {
         private readonly IWalkerRepository _walkerRepo;
+        private readonly IWalkRepository _walkRepo;
 
-        public WalkersController(IWalkerRepository walkerRepository)
+        public WalkersController(IWalkerRepository walkerRepository, IWalkRepository walkRepo)
         {
             _walkerRepo = walkerRepository;
+            _walkRepo = walkRepo;
         }
 
         public IActionResult Index()
@@ -29,6 +31,10 @@ namespace DogGo.Controllers
             {
                 return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, Message = $"Walker {id} not found" });
             }
+
+            List<Walk> walks = _walkRepo.GetByWalkerId(id);
+            walker.Walks = walks;
+
             return View(walker);
         }
     }
